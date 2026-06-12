@@ -3,6 +3,7 @@
 import { Howl } from "howler";
 import { useEffect, useRef } from "react";
 import { create } from "zustand";
+import { withBase } from "@/lib/asset";
 
 /**
  * 오디오 매니저 — 층별 BGM crossfade + 음소거 + 첫 제스처 unlock.
@@ -54,7 +55,7 @@ export default function AudioManager() {
     if (!howls.current[id]) {
       try {
         howls.current[id] = new Howl({
-          src: [src],
+          src: [withBase(src)!],
           loop: true,
           volume: 0,
           html5: true,

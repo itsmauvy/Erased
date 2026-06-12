@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SceneArt from "./SceneArt";
+import { withBase } from "@/lib/asset";
 
 /**
  * 배경 해석기: AI 이미지(src)가 있으면 그걸 쓰고,
@@ -19,12 +20,13 @@ export default function SceneBackground({
   accent: string;
   src?: string;
 }) {
+  const resolved = withBase(src);
   const [status, setStatus] = useState<"idle" | "ok" | "fail">(
-    src ? "idle" : "fail"
+    resolved ? "idle" : "fail"
   );
 
   useEffect(() => {
-    if (!src) {
+    if (!resolved) {
       setStatus("fail");
       return;
     }
@@ -32,13 +34,13 @@ export default function SceneBackground({
     const img = new window.Image();
     img.onload = () => active && setStatus("ok");
     img.onerror = () => active && setStatus("fail");
-    img.src = src;
+    img.src = resolved;
     return () => {
       active = false;
     };
-  }, [src]);
+  }, [resolved]);
 
-  if (status === "ok" && src) {
+  if (status === "ok" && resolved) {
     return (
       <div className="sb-root absolute inset-0 overflow-hidden">
         {/* 마우스 패럴럭스: 커서 따라 살짝 이동 */}
@@ -47,7 +49,7 @@ export default function SceneBackground({
           <div
             className="sb-kenburns absolute inset-0"
             style={{
-              backgroundImage: `url(${src})`,
+              backgroundImage: `url(${resolved})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               filter: "brightness(1.7) saturate(1.15) contrast(1.0)",

@@ -3,6 +3,7 @@
 import { useEffect, useMemo } from "react";
 import { useClueStore } from "@/hooks/useClueStore";
 import { STAGE, type ClueData } from "@/lib/chapters";
+import { withBase } from "@/lib/asset";
 
 /** id → {clue, accent} 룩업 (단서가 속한 층의 강조색을 함께) */
 function buildIndex() {
@@ -70,7 +71,7 @@ export default function ClueOverlay() {
           <div className="ev-photo">
             {/* 파일이 아직 없으면 조용히 숨긴다 */}
             <img
-              src={clue.image}
+              src={withBase(clue.image)}
               alt=""
               onError={(e) => {
                 const p = e.currentTarget.closest(".ev-photo") as HTMLElement | null;
