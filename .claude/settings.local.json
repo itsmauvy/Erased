@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npm install gsap lenis howler zustand 2>&1)",
+      "PowerShell(npm install --save-dev @types/howler 2>&1)"
+    ]
+  }
+}
