@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 type Props = {
   label: string;
@@ -15,7 +15,7 @@ export default function ChoiceButton({ label, onClick, disabled }: Props) {
       className="choice-btn"
     >
       {label}
-      <style jsx>{`
+      <style>{`
         .choice-btn {
           display: block;
           width: 100%;
@@ -45,3 +45,4 @@ export default function ChoiceButton({ label, onClick, disabled }: Props) {
     </button>
   );
 }
+

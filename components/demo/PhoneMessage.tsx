@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -37,7 +37,7 @@ export default function PhoneMessage({
       <div className={`bubble ${isRight ? "bubble-right" : "bubble-left"}`}>
         {text}
       </div>
-      <style jsx>{`
+      <style>{`
         .msg-wrap {
           display: flex;
           flex-direction: column;
@@ -79,3 +79,4 @@ export default function PhoneMessage({
     </div>
   );
 }
+

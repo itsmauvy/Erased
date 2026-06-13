@@ -20,7 +20,6 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
   const [step, setStep] = useState<"explore" | "phone-open" | "realization" | "final-choice">("explore");
   const [showHint, setShowHint] = useState(false);
 
-  // 비/번개 캔버스
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const canvas = canvasRef.current;
@@ -56,7 +55,6 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
     return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", onResize); };
   }, []);
 
-  // 손전등
   useEffect(() => {
     if (window.matchMedia("(pointer: coarse)").matches) return;
     let raf = 0;
@@ -104,12 +102,11 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
             className={`hotspot ${showHint ? "hint-active" : ""}`}
             style={{ left: `${CLUE_X}%`, top: `${CLUE_Y}%` }}
             onClick={() => setStep("phone-open")}
-            aria-label="바닥의 휴대폰"
+            aria-label="민서의 휴대폰"
           />
         </>
       )}
 
-      {/* 휴대폰 잠금화면 모달 (코드로 구현) */}
       {step === "phone-open" && (
         <div className="modal-overlay" style={{ cursor: "auto" }}>
           <button className="modal-close" onClick={() => setStep("explore")}>✕ 닫기</button>
@@ -119,38 +116,37 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
             <div className="phone-divider" />
             <div className="phone-row">
               <span className="phone-label">마지막 통화</span>
-              <span className="phone-value">3일 전 11:58 PM</span>
+              <span className="phone-value">3일 전  11:58 PM</span>
             </div>
-            <div className="phone-offline">⚠ 현재 꺼진 상태</div>
+            <div className="phone-offline">— 현재 오프라인 상태</div>
           </div>
           <button className="close-btn" onClick={() => setStep("realization")}>확인</button>
         </div>
       )}
 
-      {/* 깨달음 + 최종 선택 */}
       {(step === "realization" || step === "final-choice") && (
         <div className="bottom-panel">
           <p className="realization-text">
-            민서의 휴대폰은 3일 전부터 꺼져 있었다.<br />
-            그럼 지금까지 문자를 보낸 사람은 누구지?
+            민서의 전화기가 여기 있었다. 3일째 꺼져 있다.<br />
+            그날 밤까지 마지막으로 통화한 사람을 알고 있다.
           </p>
-          <PhoneMessage sender="민서" text={"고마워.\n\n이제 선택해."} delay={1000} />
+          <PhoneMessage sender="민서" text={"결정해.\n\n지금 선택해."} delay={1000} />
           {step === "realization" && (
             <div style={{ marginTop: 16 }}>
-              <ChoiceButton label="A.  진실을 공개한다" onClick={() => handleFinalChoice("A")} />
-              <ChoiceButton label="B.  모든 걸 묻어둔다" onClick={() => handleFinalChoice("B")} />
+              <ChoiceButton label="A.  진실을 드러낸다" onClick={() => handleFinalChoice("A")} />
+              <ChoiceButton label="B.  모든 걸 묻어버린다" onClick={() => handleFinalChoice("B")} />
             </div>
           )}
           {step === "final-choice" && (
-            <p className="fading-text">선택하는 중...</p>
+            <p className="fading-text">선택되는 중...</p>
           )}
         </div>
       )}
 
-      <style jsx>{`
+      <style>{`
         .scene-wrap { position: fixed; inset: 0; overflow: hidden; animation: fadeIn 0.6s ease both; cursor: none; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bg { position: absolute; inset: 0; background: url('/bg/scene-rooftop.jpg') center/cover no-repeat; }
+        .bg { position: absolute; inset: 0; background: url('${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/bg/scene-rooftop.jpg') center/cover no-repeat; }
         .rain-canvas { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
         .mask-layer { pointer-events: none; position: fixed; inset: 0; z-index: 10; background: rgba(3,4,7,0.94); }
         .glow-layer { pointer-events: none; position: fixed; inset: 0; z-index: 11; mix-blend-mode: screen; }
@@ -187,8 +183,7 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
           font-family: var(--font-geist-mono), monospace;
           font-size: 0.72rem; letter-spacing: 0.15em; color: var(--ink-faint);
           background: transparent; border: 1px solid rgba(232,230,223,0.15);
-          padding: 8px 16px; cursor: pointer;
-          transition: color 0.3s, border-color 0.3s;
+          padding: 8px 16px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
         }
         .modal-close:hover { color: var(--ink); border-color: var(--accent); }
         .phone-mockup {
@@ -202,16 +197,13 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
         }
         .phone-name { font-size: 0.9rem; color: var(--ink-dim); margin-bottom: 20px; }
         .phone-divider { height: 1px; background: rgba(232,230,223,0.08); margin-bottom: 16px; }
-        .phone-row {
-          display: flex; justify-content: space-between; margin-bottom: 10px;
-        }
+        .phone-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
         .phone-label {
           font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
           color: var(--ink-faint); letter-spacing: 0.08em;
         }
         .phone-value {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
-          color: var(--ink-dim);
+          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem; color: var(--ink-dim);
         }
         .phone-offline {
           font-family: var(--font-geist-mono), monospace; font-size: 0.62rem;
@@ -230,9 +222,8 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
           padding: 56px 28px 40px; max-width: 480px; margin: 0 auto;
         }
         .realization-text {
-          font-family: var(--font-myeongjo), serif; font-size: 0.92rem;
-          color: var(--ink-dim); line-height: 1.8; margin-bottom: 24px;
-          animation: fadeUp 0.5s ease both;
+          font-size: 0.92rem; color: var(--ink-dim);
+          line-height: 1.8; margin-bottom: 24px; animation: fadeUp 0.5s ease both;
         }
         @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
         .fading-text {
