@@ -76,46 +76,6 @@ export default function PhoneIntro({ onAdvance }: Props) {
           )}
         </div>
       </div>
-
-      <style>{`
-        .scene-wrap {
-          position: fixed; inset: 0; background: #03040a;
-          display: flex; align-items: center; justify-content: center;
-          animation: fadeIn 0.6s ease both; cursor: auto;
-        }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .rain-overlay {
-          position: absolute; inset: 0; pointer-events: none;
-          background: repeating-linear-gradient(
-            170deg, transparent 0px, transparent 3px,
-            rgba(180,200,220,0.03) 3px, rgba(180,200,220,0.03) 4px
-          );
-          animation: rain 0.8s linear infinite;
-        }
-        @keyframes rain { from { background-position: 0 0; } to { background-position: -20px 80px; } }
-        .phone-shell {
-          position: relative; width: min(360px, 90vw); min-height: 520px;
-          background: #0d0f14; border: 1px solid rgba(232,230,223,0.1);
-          border-radius: 32px; padding: 24px 20px 32px;
-          box-shadow: 0 0 60px rgba(0,0,0,0.8);
-          display: flex; flex-direction: column;
-        }
-        .status-bar {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.75rem;
-          color: var(--ink-faint); letter-spacing: 0.12em; text-align: center;
-          margin-bottom: 18px; padding-bottom: 12px;
-          border-bottom: 1px solid rgba(232,230,223,0.08);
-        }
-        .chat-area { flex: 1; display: flex; flex-direction: column; }
-        .choices { display: flex; flex-direction: column; gap: 6px; margin-top: 24px; }
-        .enter-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.78rem;
-          letter-spacing: 0.18em; color: var(--ink-dim); background: transparent;
-          border: 1px solid rgba(232,230,223,0.25); padding: 12px 28px; cursor: pointer;
-          transition: color 0.3s, border-color 0.3s;
-        }
-        .enter-btn:hover { color: var(--ink); border-color: var(--accent); }
-      `}</style>
     </div>
   );
 }

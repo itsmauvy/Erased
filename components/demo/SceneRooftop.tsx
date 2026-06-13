@@ -12,6 +12,7 @@ type Props = {
 
 const CLUE_X = 62;
 const CLUE_Y = 78;
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function SceneRooftop({ state, onAdvance }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,8 +86,8 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
   };
 
   return (
-    <div className="scene-wrap">
-      <div className="bg" />
+    <div className="scene-wrap-explore">
+      <div className="bg" style={{ backgroundImage: `url('${BASE}/bg/scene-rooftop.jpg')` }} />
       <canvas ref={canvasRef} aria-hidden className="rain-canvas" />
       <div ref={maskRef} aria-hidden className="mask-layer" />
       <div ref={glowRef} aria-hidden className="glow-layer" />
@@ -94,10 +95,10 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
       {step === "explore" && (
         <>
           <div className="objective">마지막 단서를 확인하세요.</div>
-          <button
-            className="hint-btn"
-            onClick={() => { setShowHint(true); setTimeout(() => setShowHint(false), 3000); }}
-          >HINT</button>
+          <button className="hint-btn"
+            onClick={() => { setShowHint(true); setTimeout(() => setShowHint(false), 3000); }}>
+            HINT
+          </button>
           <button
             className={`hotspot ${showHint ? "hint-active" : ""}`}
             style={{ left: `${CLUE_X}%`, top: `${CLUE_Y}%` }}
@@ -108,7 +109,7 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
       )}
 
       {step === "phone-open" && (
-        <div className="modal-overlay" style={{ cursor: "auto" }}>
+        <div className="modal-overlay">
           <button className="modal-close" onClick={() => setStep("explore")}>✕ 닫기</button>
           <div className="phone-mockup">
             <div className="phone-status">03:41 AM</div>
@@ -142,95 +143,6 @@ export default function SceneRooftop({ state, onAdvance }: Props) {
           )}
         </div>
       )}
-
-      <style>{`
-        .scene-wrap { position: fixed; inset: 0; overflow: hidden; animation: fadeIn 0.6s ease both; cursor: none; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bg { position: absolute; inset: 0; background: url('${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/bg/scene-rooftop.jpg') center/cover no-repeat; }
-        .rain-canvas { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
-        .mask-layer { pointer-events: none; position: fixed; inset: 0; z-index: 10; background: rgba(3,4,7,0.94); }
-        .glow-layer { pointer-events: none; position: fixed; inset: 0; z-index: 11; mix-blend-mode: screen; }
-        .objective {
-          position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
-          letter-spacing: 0.22em; color: var(--ink-faint); z-index: 20; white-space: nowrap;
-          background: rgba(3,4,7,0.6); padding: 6px 16px;
-        }
-        .hint-btn {
-          position: absolute; bottom: 32px; right: 32px; z-index: 20;
-          font-family: var(--font-geist-mono), monospace; font-size: 0.65rem; letter-spacing: 0.25em;
-          color: var(--ink-faint); background: rgba(3,4,7,0.7);
-          border: 1px solid rgba(232,230,223,0.15); padding: 8px 18px; cursor: pointer;
-        }
-        .hint-btn:hover { color: var(--ink); border-color: var(--accent); }
-        .hotspot {
-          position: absolute; width: 120px; height: 120px; border-radius: 50%;
-          transform: translate(-50%, -50%); cursor: pointer; z-index: 40;
-          background: transparent; border: none; pointer-events: auto;
-        }
-        .hotspot.hint-active { animation: hintPulse 0.6s ease-in-out infinite alternate; }
-        @keyframes hintPulse {
-          from { box-shadow: 0 0 0 4px rgba(205,178,122,0.5), 0 0 20px 8px rgba(205,178,122,0.2); }
-          to   { box-shadow: 0 0 0 8px rgba(205,178,122,0.8), 0 0 40px 15px rgba(205,178,122,0.4); }
-        }
-        .modal-overlay {
-          position: fixed; inset: 0; z-index: 50; background: rgba(3,4,7,0.88);
-          display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
-          animation: fadeIn 0.3s ease both; cursor: auto;
-        }
-        .modal-close {
-          position: absolute; top: 24px; right: 28px;
-          font-family: var(--font-geist-mono), monospace;
-          font-size: 0.72rem; letter-spacing: 0.15em; color: var(--ink-faint);
-          background: transparent; border: 1px solid rgba(232,230,223,0.15);
-          padding: 8px 16px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
-        }
-        .modal-close:hover { color: var(--ink); border-color: var(--accent); }
-        .phone-mockup {
-          width: min(300px, 85vw); background: #0d0f16;
-          border: 1px solid rgba(232,230,223,0.1); border-radius: 20px;
-          padding: 32px 28px; text-align: center;
-        }
-        .phone-status {
-          font-family: var(--font-geist-mono), monospace; font-size: 2.2rem;
-          color: var(--ink); margin-bottom: 6px; letter-spacing: 0.05em;
-        }
-        .phone-name { font-size: 0.9rem; color: var(--ink-dim); margin-bottom: 20px; }
-        .phone-divider { height: 1px; background: rgba(232,230,223,0.08); margin-bottom: 16px; }
-        .phone-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .phone-label {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
-          color: var(--ink-faint); letter-spacing: 0.08em;
-        }
-        .phone-value {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem; color: var(--ink-dim);
-        }
-        .phone-offline {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.62rem;
-          color: rgba(200,90,90,0.7); margin-top: 14px; letter-spacing: 0.1em;
-        }
-        .close-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.72rem;
-          letter-spacing: 0.2em; color: var(--ink-faint); background: transparent;
-          border: 1px solid rgba(232,230,223,0.18); padding: 10px 28px; cursor: pointer;
-          transition: color 0.3s, border-color 0.3s;
-        }
-        .close-btn:hover { color: var(--ink); border-color: var(--accent); }
-        .bottom-panel {
-          position: absolute; bottom: 0; left: 0; right: 0; z-index: 20;
-          background: linear-gradient(to top, rgba(3,4,7,0.98) 70%, transparent);
-          padding: 56px 28px 40px; max-width: 480px; margin: 0 auto;
-        }
-        .realization-text {
-          font-size: 0.92rem; color: var(--ink-dim);
-          line-height: 1.8; margin-bottom: 24px; animation: fadeUp 0.5s ease both;
-        }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-        .fading-text {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.72rem;
-          letter-spacing: 0.2em; color: var(--ink-faint); text-align: center; margin-top: 20px;
-        }
-      `}</style>
     </div>
   );
 }

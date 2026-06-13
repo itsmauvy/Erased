@@ -1,5 +1,6 @@
 "use client";
 
+import "./demo.css";
 import { useState, useEffect } from "react";
 import { GameState, Scene, initialState } from "@/components/demo/GameState";
 import PhoneIntro from "@/components/demo/PhoneIntro";

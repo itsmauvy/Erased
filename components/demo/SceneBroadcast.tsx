@@ -19,6 +19,7 @@ const SCRIPT = [
 
 const CLUE_X = 62;
 const CLUE_Y = 78;
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function SceneBroadcast({ onAdvance }: Props) {
   const maskRef = useRef<HTMLDivElement>(null);
@@ -71,8 +72,8 @@ export default function SceneBroadcast({ onAdvance }: Props) {
   };
 
   return (
-    <div className="scene-wrap">
-      <div className="bg" />
+    <div className="scene-wrap-explore">
+      <div className="bg" style={{ backgroundImage: `url('${BASE}/bg/scene-broadcast.jpg')` }} />
       <div className="flicker" aria-hidden />
       <div ref={maskRef} aria-hidden className="mask-layer" />
       <div ref={glowRef} aria-hidden className="glow-layer" />
@@ -94,10 +95,10 @@ export default function SceneBroadcast({ onAdvance }: Props) {
       )}
 
       {step === "recorder-open" && (
-        <div className="modal-overlay" style={{ cursor: "auto" }}>
+        <div className="modal-overlay">
           <button className="modal-close" onClick={() => setStep("explore")}>✕ 닫기</button>
           <div className="recorder-modal">
-            <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/clues/detail-recorder.jpg`} alt="녹음기" className="recorder-img" />
+            <img src={`${BASE}/clues/detail-recorder.jpg`} alt="녹음기" className="recorder-img" />
             <div className="rec-filename">REC_0913.WAV</div>
             <button className="play-btn" onClick={handlePlay}>▶ 재생</button>
           </div>
@@ -143,83 +144,6 @@ export default function SceneBroadcast({ onAdvance }: Props) {
           )}
         </div>
       )}
-
-      <style>{`
-        .scene-wrap { position: fixed; inset: 0; overflow: hidden; animation: fadeIn 0.6s ease both; cursor: none; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bg { position: absolute; inset: 0; background: url('${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/bg/scene-broadcast.jpg') center/cover no-repeat; }
-        .flicker {
-          position: absolute; inset: 0; z-index: 2; pointer-events: none;
-          background: rgba(210,220,190,0.04); animation: flicker 4.2s ease-in-out infinite;
-        }
-        @keyframes flicker { 0%,95%,100% { opacity:1; } 96% { opacity:0.1; } 97% { opacity:0.9; } 98% { opacity:0.2; } }
-        .mask-layer { pointer-events: none; position: fixed; inset: 0; z-index: 10; background: rgba(3,4,7,0.96); }
-        .glow-layer { pointer-events: none; position: fixed; inset: 0; z-index: 11; mix-blend-mode: screen; }
-        .objective {
-          position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
-          letter-spacing: 0.22em; color: var(--ink-faint); z-index: 20; white-space: nowrap;
-          background: rgba(3,4,7,0.6); padding: 6px 16px;
-        }
-        .hint-btn {
-          position: absolute; bottom: 32px; right: 32px; z-index: 20;
-          font-family: var(--font-geist-mono), monospace; font-size: 0.65rem; letter-spacing: 0.25em;
-          color: var(--ink-faint); background: rgba(3,4,7,0.7);
-          border: 1px solid rgba(232,230,223,0.15); padding: 8px 18px; cursor: pointer;
-        }
-        .hint-btn:hover { color: var(--ink); border-color: var(--accent); }
-        .hotspot {
-          position: absolute; width: 120px; height: 120px; border-radius: 50%;
-          transform: translate(-50%, -50%); cursor: pointer; z-index: 40;
-          background: transparent; border: none; pointer-events: auto;
-        }
-        .hotspot.hint-active { animation: hintPulse 0.6s ease-in-out infinite alternate; }
-        @keyframes hintPulse {
-          from { box-shadow: 0 0 0 4px rgba(205,178,122,0.5), 0 0 20px 8px rgba(205,178,122,0.2); }
-          to   { box-shadow: 0 0 0 8px rgba(205,178,122,0.8), 0 0 40px 15px rgba(205,178,122,0.4); }
-        }
-        .modal-overlay {
-          position: fixed; inset: 0; z-index: 50; background: rgba(3,4,7,0.9);
-          display: flex; align-items: center; justify-content: center;
-          animation: fadeIn 0.3s ease both;
-        }
-        .modal-close {
-          position: absolute; top: 24px; right: 28px;
-          font-family: var(--font-geist-mono), monospace; font-size: 0.72rem; letter-spacing: 0.15em;
-          color: var(--ink-faint); background: transparent; border: 1px solid rgba(232,230,223,0.15);
-          padding: 8px 16px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
-        }
-        .modal-close:hover { color: var(--ink); border-color: var(--accent); }
-        .recorder-modal { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-        .recorder-img { width: min(260px, 65vw); border: 1px solid rgba(232,230,223,0.1); }
-        .rec-filename { font-family: var(--font-geist-mono), monospace; font-size: 0.72rem; letter-spacing: 0.2em; color: var(--ink-faint); }
-        .play-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.9rem; letter-spacing: 0.3em;
-          color: var(--accent); background: transparent; border: 1px solid var(--accent);
-          padding: 12px 32px; cursor: pointer; transition: background 0.3s, color 0.3s;
-        }
-        .play-btn:hover { background: var(--accent); color: #06070a; }
-        .transcript-panel {
-          position: absolute; inset: 0; z-index: 20;
-          display: flex; flex-direction: column; justify-content: center;
-          padding: 40px 28px; max-width: 540px; margin: 0 auto; overflow-y: auto;
-          background: linear-gradient(to top, rgba(3,4,7,0.98) 60%, rgba(3,4,7,0.7) 100%);
-        }
-        .rec-header { font-family: var(--font-geist-mono), monospace; font-size: 0.65rem; letter-spacing: 0.2em; color: var(--ink-faint); margin-bottom: 20px; }
-        .script-line { display: flex; gap: 14px; margin-bottom: 14px; animation: fadeUp 0.4s ease both; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:none; } }
-        .spk { font-family: var(--font-geist-mono), monospace; font-size: 0.66rem; letter-spacing: 0.1em; color: var(--ink-faint); white-space: nowrap; min-width: 76px; padding-top: 2px; }
-        .txt { font-size: 0.9rem; color: var(--ink-dim); line-height: 1.65; }
-        .minseo .txt { color: var(--ink); }
-        .male .spk { color: rgba(200,90,90,0.75); }
-        .static-line { font-family: var(--font-geist-mono), monospace; font-size: 0.62rem; letter-spacing: 0.2em; color: var(--ink-faint); margin: 8px 0 18px; }
-        .move-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.78rem; letter-spacing: 0.18em;
-          color: var(--ink-dim); background: transparent; border: 1px solid rgba(232,230,223,0.25);
-          padding: 12px 28px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
-        }
-        .move-btn:hover { color: var(--ink); border-color: var(--accent); }
-      `}</style>
     </div>
   );
 }

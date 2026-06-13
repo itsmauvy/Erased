@@ -11,6 +11,7 @@ type Props = {
 
 const CLUE_X = 65;
 const CLUE_Y = 75;
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export default function SceneClassroom({ onAdvance }: Props) {
   const maskRef = useRef<HTMLDivElement>(null);
@@ -54,8 +55,8 @@ export default function SceneClassroom({ onAdvance }: Props) {
   const isModalOpen = step === "photo-front" || step === "photo-back";
 
   return (
-    <div className="scene-wrap">
-      <div className="bg" />
+    <div className="scene-wrap-explore">
+      <div className="bg" style={{ backgroundImage: `url('${BASE}/bg/scene-classroom.jpg')` }} />
       <div ref={maskRef} aria-hidden className="mask-layer" />
       <div ref={glowRef} aria-hidden className="glow-layer" />
 
@@ -78,16 +79,16 @@ export default function SceneClassroom({ onAdvance }: Props) {
       )}
 
       {isModalOpen && (
-        <div className="modal-overlay" style={{ cursor: "auto" }}>
+        <div className="modal-overlay">
           <button className="modal-close" onClick={() => setStep("explore")}>✕ 닫기</button>
           <div className="modal-inner">
             <div className={`photo-card ${step === "photo-back" ? "flipped" : ""}`}>
               <div className="card-face card-front">
-                <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/clues/detail-photo-front.jpg`} alt="단체사진 앞면" />
+                <img src={`${BASE}/clues/detail-photo-front.jpg`} alt="단체사진 앞면" />
                 <button className="flip-btn" onClick={() => setStep("photo-back")}>뒤집기 ↺</button>
               </div>
               <div className="card-face card-back">
-                <img src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/clues/detail-photo-back.jpg`} alt="단체사진 뒷면" />
+                <img src={`${BASE}/clues/detail-photo-back.jpg`} alt="단체사진 뒷면" />
                 <button className="flip-btn" onClick={() => setStep("photo-front")}>앞면 보기 ↺</button>
               </div>
             </div>
@@ -110,86 +111,6 @@ export default function SceneClassroom({ onAdvance }: Props) {
           </div>
         </div>
       )}
-
-      <style>{`
-        .scene-wrap { position: fixed; inset: 0; overflow: hidden; animation: fadeIn 0.6s ease both; cursor: none; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .bg { position: absolute; inset: 0; background: url('${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/bg/scene-classroom.jpg') center/cover no-repeat; }
-        .mask-layer { pointer-events: none; position: fixed; inset: 0; z-index: 10; background: rgba(3,4,7,0.96); }
-        .glow-layer { pointer-events: none; position: fixed; inset: 0; z-index: 11; mix-blend-mode: screen; }
-        .objective {
-          position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem;
-          letter-spacing: 0.22em; color: var(--ink-faint); z-index: 20; white-space: nowrap;
-          background: rgba(3,4,7,0.6); padding: 6px 16px;
-        }
-        .hint-btn {
-          position: absolute; bottom: 32px; right: 32px; z-index: 20;
-          font-family: var(--font-geist-mono), monospace; font-size: 0.65rem; letter-spacing: 0.25em;
-          color: var(--ink-faint); background: rgba(3,4,7,0.7);
-          border: 1px solid rgba(232,230,223,0.15); padding: 8px 18px; cursor: pointer;
-          transition: color 0.3s, border-color 0.3s;
-        }
-        .hint-btn:hover { color: var(--ink); border-color: var(--accent); }
-        .hotspot {
-          position: absolute; width: 120px; height: 120px; border-radius: 50%;
-          transform: translate(-50%, -50%); cursor: pointer; z-index: 40;
-          background: transparent; border: none; pointer-events: auto;
-        }
-        .hotspot.hint-active { animation: hintPulse 0.6s ease-in-out infinite alternate; }
-        @keyframes hintPulse {
-          from { box-shadow: 0 0 0 4px rgba(205,178,122,0.5), 0 0 20px 8px rgba(205,178,122,0.2); }
-          to   { box-shadow: 0 0 0 8px rgba(205,178,122,0.8), 0 0 40px 15px rgba(205,178,122,0.4); }
-        }
-        .modal-overlay {
-          position: fixed; inset: 0; z-index: 50; background: rgba(3,4,7,0.88);
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          gap: 24px; animation: fadeIn 0.3s ease both;
-        }
-        .modal-close {
-          position: absolute; top: 24px; right: 28px;
-          font-family: var(--font-geist-mono), monospace; font-size: 0.72rem; letter-spacing: 0.15em;
-          color: var(--ink-faint); background: transparent;
-          border: 1px solid rgba(232,230,223,0.15); padding: 8px 16px; cursor: pointer;
-          transition: color 0.3s, border-color 0.3s;
-        }
-        .modal-close:hover { color: var(--ink); border-color: var(--accent); }
-        .modal-inner { display: flex; flex-direction: column; align-items: center; gap: 16px; }
-        .photo-card {
-          width: min(400px, 85vw); aspect-ratio: 1; position: relative;
-          transform-style: preserve-3d;
-          transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
-        }
-        .photo-card.flipped { transform: rotateY(180deg); }
-        .card-face {
-          position: absolute; inset: 0; backface-visibility: hidden;
-          display: flex; flex-direction: column; align-items: center; gap: 12px;
-        }
-        .card-face img { width: 100%; height: calc(100% - 48px); object-fit: cover; border: 1px solid rgba(232,230,223,0.1); }
-        .card-back { transform: rotateY(180deg); }
-        .flip-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.68rem; letter-spacing: 0.18em;
-          color: var(--ink-faint); background: transparent; border: 1px solid rgba(232,230,223,0.15);
-          padding: 7px 18px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
-        }
-        .flip-btn:hover { color: var(--ink); border-color: var(--accent); }
-        .clue-label {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.65rem;
-          letter-spacing: 0.2em; color: var(--accent); margin: 0;
-        }
-        .modal-choices { display: flex; flex-direction: column; gap: 8px; width: min(360px, 90vw); }
-        .chat-panel {
-          position: absolute; bottom: 0; left: 0; right: 0; z-index: 30;
-          background: linear-gradient(to top, rgba(3,4,7,0.97) 70%, transparent);
-          padding: 48px 24px 36px; max-width: 480px; margin: 0 auto;
-        }
-        .move-btn {
-          font-family: var(--font-geist-mono), monospace; font-size: 0.78rem; letter-spacing: 0.18em;
-          color: var(--ink-dim); background: transparent; border: 1px solid rgba(232,230,223,0.25);
-          padding: 12px 28px; cursor: pointer; transition: color 0.3s, border-color 0.3s;
-        }
-        .move-btn:hover { color: var(--ink); border-color: var(--accent); }
-      `}</style>
     </div>
   );
 }
