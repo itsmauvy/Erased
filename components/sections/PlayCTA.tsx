@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { STAGE } from "@/lib/chapters";
 
@@ -36,16 +37,9 @@ export default function PlayCTA() {
         {p.tagline}
       </p>
 
-      <button
-        type="button"
-        className="reveal play-btn"
-        onClick={() => {
-          // 실제 게임 빌드로 교체될 자리
-          window.alert("게임 빌드 연결 예정 — The story continues.");
-        }}
-      >
+      <Link href="/demo" className="reveal play-btn">
         <span>{p.cta}</span>
-      </button>
+      </Link>
 
       <p className="reveal mt-12 font-mono text-[0.66rem] tracking-[0.3em] text-[var(--ink-faint)]">
         {p.footnote}
